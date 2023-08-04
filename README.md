@@ -1,9 +1,11 @@
 # Spotify Clone
 
-[Deploy](...)
+[Deploy]() <!-- TODO add link -->
 
 # Used on the project:
 
 - **ReactJS**
 - **NextJS**
 - **Tailwind**
+- **Supabase**
+- **Radix**
