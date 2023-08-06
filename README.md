@@ -9,3 +9,4 @@
 - **Tailwind**
 - **Supabase**
 - **Radix**
+- **Zustand**
