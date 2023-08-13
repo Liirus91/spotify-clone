@@ -52,13 +52,14 @@ export const MyUserContextProvider = (props: Props) => {
           const subscriptionPromise = results[1];
 
           if (userDetailsPromise.status === 'fulfilled') {
+            //TODO: check data after creating user
             // @ts-ignore
-            setUserDetails(userDetailsPromise.value.data as UserDetails);
+            setUserDetails(userDetailsPromise.value?.data as UserDetails);
           }
 
           if (subscriptionPromise.status === 'fulfilled') {
             // @ts-ignore
-            setSubscription(subscriptionPromise.value.data as Subscription);
+            setSubscription(subscriptionPromise.value?.data as Subscription);
           }
 
           setIsLoadingData(false);
