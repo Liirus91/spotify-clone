@@ -3,9 +3,12 @@
 import useUploadModal from '@/hooks/useUploadModal';
 import Modal from './Modal';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
+import { useState } from 'react';
+import Input from './Input';
 
 const UploadModal = () => {
   const uploadModal = useUploadModal();
+  const [isLoading, setIsLoading] = useState();
   const { register, handleSubmit, reset } = useForm<FieldValues>({
     defaultValues: { author: '', title: '', song: null, image: null },
   });
@@ -25,7 +28,14 @@ const UploadModal = () => {
       onChange={onChange}
       description="Upload an mp3 file"
     >
-      <form onSubmit={handleSubmit(onSubmit)}></form>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Input
+          id="title"
+          disabled={isLoading}
+          {...register('title', { required: true })}
+          placeholder="Song title"
+        />
+      </form>
     </Modal>
   );
 };
