@@ -5,6 +5,7 @@ import Modal from './Modal';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { useState } from 'react';
 import Input from './Input';
+import Button from './Button';
 
 const UploadModal = () => {
   const uploadModal = useUploadModal();
@@ -41,6 +42,29 @@ const UploadModal = () => {
           {...register('author', { required: true })}
           placeholder="Song author"
         />
+        <div>
+          <div className="pb-1">Select a song file</div>
+          <Input
+            id="song"
+            type="file"
+            disabled={isLoading}
+            accept=".mp3"
+            {...register('song', { required: true })}
+          />
+        </div>
+        <div>
+          <div className="pb-1">Select an image</div>
+          <Input
+            id="image"
+            type="file"
+            disabled={isLoading}
+            accept="image/*"
+            {...register('image', { required: true })}
+          />
+        </div>
+        <Button disabled={isLoading} type="submit">
+          Create
+        </Button>
       </form>
     </Modal>
   );
