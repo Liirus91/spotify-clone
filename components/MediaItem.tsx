@@ -30,6 +30,10 @@ const MediaItem: React.FC<MediaItemProps> = ({ data, onClick }) => {
           className="object-cover"
         />
       </div>
+      <div className="flex flex-col gap-y-1 overflow-hidden">
+        <p className="text-white truncate">{data.title}</p>
+        <p className="truncate text-sm text-neutral-400">{data.author}</p>
+      </div>
     </div>
   );
 };
