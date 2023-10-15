@@ -36,3 +36,10 @@ export const postData = async ({
 
   return res.json();
 };
+
+export const toDateTime = (seconds: number) => {
+  let time = new Date('1970-01-01T00:30:00Z');
+  time.setSeconds(seconds);
+
+  return time;
+};
