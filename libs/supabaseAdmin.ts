@@ -94,10 +94,10 @@ const createOrRetrieveCustomer = async ({
 
 const copyBillingDetailsToCustomer = async (
   uuid: string,
-  payment_metod: Stripe.PaymentMethod
+  payment_method: Stripe.PaymentMethod
 ) => {
-  const customer = payment_metod.customer as string;
-  const { name, phone, address } = payment_metod.billing_details;
+  const customer = payment_method.customer as string;
+  const { name, phone, address } = payment_method.billing_details;
 
   if (!name || !phone || !address) {
     return;
@@ -109,7 +109,7 @@ const copyBillingDetailsToCustomer = async (
     .from('users')
     .update({
       billing_address: { ...address },
-      payment_method: { ...payment_metod[payment_metod.type] },
+      payment_method: { ...payment_method[payment_method.type] },
     })
     .eq('id', uuid);
 
