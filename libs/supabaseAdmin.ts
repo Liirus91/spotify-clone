@@ -3,6 +3,7 @@ import { Database } from '@/types_db';
 import { createClient } from '@supabase/supabase-js';
 import { stripe } from './stripe';
 import Stripe from 'stripe';
+import { toDateTime } from './helpers';
 
 export const supabaseAdmin = createClient<Database>(
   process.env.NEXT_PUBLIC_SUPABASE_URL || '',
@@ -89,4 +90,111 @@ const createOrRetrieveACustomer = async ({
   }
 
   return data.stripe_customer_id;
+};
+
+const copyBillingDetailsToCustomer = async (
+  uuid: string,
+  payment_metod: Stripe.PaymentMethod
+) => {
+  const customer = payment_metod.customer as string;
+  const { name, phone, address } = payment_metod.billing_details;
+
+  if (!name || !phone || !address) {
+    return;
+  }
+
+  //@ts-ignore
+  await stripe.customers.update(customer, { name, phone, address });
+  const { error } = await supabaseAdmin
+    .from('users')
+    .update({
+      billing_address: { ...address },
+      payment_method: { ...payment_metod[payment_metod.type] },
+    })
+    .eq('id', uuid);
+
+  if (error) {
+    throw error;
+  }
+};
+
+const manageSubscriptionStatusChange = async (
+  subscriptionId: string,
+  customerId: string,
+  createAction = false
+) => {
+  const { data: customerData, error: noCustomerError } = await supabaseAdmin
+    .from('customers')
+    .select('id')
+    .eq('stripe_customer_id', customerId)
+    .single();
+
+  if (noCustomerError) {
+    throw noCustomerError;
+  }
+
+  const { id: uuid } = customerData;
+
+  const subscription = await stripe.subscriptions.retrieve(subscriptionId, {
+    expand: ['default_payment_method'],
+  });
+
+  const subscriptionData: Database['public']['Tables']['subscriptions']['Insert'] =
+    {
+      id: subscription.id,
+      user_id: uuid,
+      metadata: subscription.metadata,
+      //@ts-ignore
+      status: subscription.status,
+      price_id: subscription.items.data[0].price.id,
+      //@ts-ignore
+      quantity: subscription.quantity,
+      cancel_at_period_end: subscription.cancel_at_period_end,
+      cancel_at: subscription.cancel_at
+        ? toDateTime(subscription.cancel_at).toISOString()
+        : null,
+      canceled_at: subscription.canceled_at
+        ? toDateTime(subscription.canceled_at).toISOString()
+        : null,
+      current_period_start: toDateTime(
+        subscription.current_period_start
+      ).toISOString(),
+      current_period_end: toDateTime(
+        subscription.current_period_end
+      ).toISOString(),
+      created: toDateTime(subscription.created).toISOString(),
+      trial_start: subscription.trial_start
+        ? toDateTime(subscription.trial_start).toISOString()
+        : null,
+      trial_end: subscription.trial_end
+        ? toDateTime(subscription.trial_end).toISOString()
+        : null,
+      ended_at: subscription.ended_at
+        ? toDateTime(subscription.ended_at).toISOString()
+        : null,
+    };
+
+  const { error } = await supabaseAdmin
+    .from('subscriptions')
+    .upsert([subscriptionData]);
+
+  if (error) {
+    throw error;
+  }
+
+  console.log(`Inserted/Updated subscription [${subscription.id} for ${uuid}]`);
+
+  if (createAction && subscription.default_payment_method && uuid) {
+    await copyBillingDetailsToCustomer(
+      uuid,
+      subscription.default_payment_method as Stripe.PaymentMethod
+    );
+  }
+};
+
+export {
+  upsertPriceRecord,
+  upsertProductRecord,
+  createOrRetrieveACustomer,
+  manageSubscriptionStatusChange,
 };
