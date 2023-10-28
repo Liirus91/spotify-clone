@@ -16,7 +16,7 @@ interface SidebarProps {
   songs: Song[];
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ children, songs }) => {
+const Sidebar = ({ children, songs }: SidebarProps) => {
   const pathname = usePathname();
   const player = usePlayer();
 
@@ -31,8 +31,8 @@ const Sidebar: React.FC<SidebarProps> = ({ children, songs }) => {
       {
         icon: BiSearch,
         label: 'Search',
-        active: pathname === '/search',
         href: '/search',
+        active: pathname === '/search',
       },
     ],
     [pathname]

@@ -1,18 +1,18 @@
-import Sidebar from '@/components/Sidebar';
-import './globals.css';
-import type { Metadata } from 'next';
 import { Figtree } from 'next/font/google';
-import SupabaseProvider from '@/providers/SupabaseProvider';
+import getSongsByUserId from '@/actions/getSongsByUserId';
+import getActiveProductsWithPrice from '@/actions/getActiveProductsWithPrice';
+import Sidebar from '@/components/Sidebar';
+import ToasterProvider from '@/providers/ToasterProvider';
 import UserProvider from '@/providers/UserProvider';
 import ModalProvider from '@/providers/ModalProvider';
-import ToasterProvider from '@/providers/ToasterProvider';
-import getSongsByUserId from '@/actions/getSongsByUserId';
+import SupabaseProvider from '@/providers/SupabaseProvider';
 import Player from '@/components/Player';
-import getActiveProductsWithPrice from '@/actions/getActiveProductsWithPrice';
+
+import './globals.css';
 
 const font = Figtree({ subsets: ['latin'] });
 
-export const metadata: Metadata = {
+export const metadata = {
   title: 'Spotify Clone',
   description: 'Listen to music!',
 };
