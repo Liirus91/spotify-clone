@@ -1,6 +1,6 @@
 # Spotify Clone
 
-[Deploy]() <!-- TODO add link -->
+[Deploy](spotify-clone-dusky-eight.vercel.app)
 
 # Used on the project:
 
@@ -10,3 +10,4 @@
 - **Supabase**
 - **Radix**
 - **Zustand**
+- **Stripe**
