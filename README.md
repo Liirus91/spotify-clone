@@ -1,6 +1,6 @@
 # Spotify Clone
 
-[Deploy](spotify-clone-dusky-eight.vercel.app)
+[Deploy](http://spotify-clone-dusky-eight.vercel.app/)
 
 # Used on the project:
 
